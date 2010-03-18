@@ -45,14 +45,14 @@ def facebook_login(request, redirect_url=None, template_name='facebook/login.htm
 
     Sending a user here without login will display a login template.
 
-    If you define a url to use this view, you can pass the following
-    parameters: 
+    Params: 
     
         *   redirect_url: defines where to send the user after they are
             logged in. This can get overridden by the url in the 'next' get 
             param passed on the url. 
         *   template_name: Template to use if a user arrives at this page 
             without submitting to it. Uses 'facebook/login.html' by default.
+            
     """
     # determine redirect url in order of priority
     passed_redirect_url = request.REQUEST.get(REDIRECT_FIELD_NAME, None)
@@ -70,7 +70,8 @@ def facebook_login(request, redirect_url=None, template_name='facebook/login.htm
         elif request.facebook.uid:
             # created profile object and dummy django user
             profile = FacebookProfile(facebook_id=request.facebook.uid)
-            user = User(username=request.facebook.uid, email=profile.email)
+            user = User(username=request.facebook.uid, email=profile.email, 
+                first_name=profile.first_name, last_name=profile.last_name)
             user.set_unusable_password()
             user.save()
             profile.user = user
@@ -90,17 +91,13 @@ def facebook_login(request, redirect_url=None, template_name='facebook/login.htm
     
 def facebook_logout(request, redirect_url=None):
     """
-    facebook_logout
-    ============================
+    Logs a user out of facebook and django.
     
-    Logs the user out of facebook and django.
+    Params:
     
-    If you define a url to use this view, you can pass the following
-    parameters:
-     * redirect_url: defines where to send the user after they are logged out.
-                     If no url is pass, it defaults to using the 
-                     'LOGOUT_REDIRECT_URL' setting.
-    
+        *   redirect_url: destination after the user is logged out - defaults
+            to the 'LOGOUT_REDIRECT_URL' setting.
+            
     """
     logout(request)
     try:
