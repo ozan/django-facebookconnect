@@ -155,7 +155,10 @@ class FacebookProfile(models.Model):
         if self.__configure_me() and self.__facebook_info['email']:
             return u"%s" % self.__facebook_info['email']
         else:
-            return self.DUMMY_FACEBOOK_INFO['email']
+            try:
+                return self.DUMMY_FACEBOOK_INFO['email']
+            except KeyError:
+                return ''
     email = property(__get_email)
 
     def facebook_only(self):
