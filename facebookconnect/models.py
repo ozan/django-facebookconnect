@@ -289,13 +289,12 @@ class FacebookProfile(models.Model):
                 all_info, my_info = self.__get_facebook_info(ids)
                 if my_info:
                     self.__facebook_info = my_info
-                    print my_info
                     self.dummy = False
                     return True
             else:
                 return True
         except (ImproperlyConfigured, FacebookError, URLError), ex:
-            print ex
+            log.debug(ex)
         return False
 
     def get_absolute_url(self):
